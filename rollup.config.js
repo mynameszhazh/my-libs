@@ -15,6 +15,11 @@ export default {
       file: 'dist/bundle.es.js'
     }
   ],
+  watch: {
+    clearScreen: false,
+    exclude: "node_modules/**",
+    include: "src/**",
+  },
   plugins: [
     resolve(),
     commonjs(),
