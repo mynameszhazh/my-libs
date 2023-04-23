@@ -1,10 +1,14 @@
 <template>
-  <div></div>
+  <div class="tree-select"></div>
 </template>
 
 <script>
+import { Select } from "element-ui";
+
 export default {
-  render(h) {},
+  render(h) {
+    h(Select);
+  },
 };
 </script>
 
