@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/application.js",
   "scripts": {
     "build": "rollup -c rollup.config.js",
     "dev": "rollup -c rollup.config.js --watch",
@@ -34,6 +34,7 @@
     "vitest": "^0.28.5"
   },
   "dependencies": {
+    "delegates": "^1.0.0",
     "koa": "^2.14.2"
   }
 }
