@@ -5,7 +5,6 @@ const response: any = {
   set body(val) {
     const original = this._body;
     this._body = val;
-
     // no content
     // if (null == val) {
     //   if (!statuses.empty[this.status]) this.status = 204;
@@ -51,6 +50,24 @@ const response: any = {
       ? this.res.hasHeader(field)
       : // Node < 7.7
         field.toLowerCase() in this.headers;
+  },
+
+  get headerSent () {
+    return this.res.headersSent
+  },
+
+  set (field, val) {
+    if (this.headerSent) return
+
+    if (arguments.length === 2) {
+      if (Array.isArray(val)) val = val.map(v => typeof v === 'string' ? v : String(v))
+      else if (typeof val !== 'string') val = String(val)
+      this.res.setHeader(field, val)
+    } else {
+      for (const key in field) {
+        this.set(key, field[key])
+      }
+    }
   },
 };
 

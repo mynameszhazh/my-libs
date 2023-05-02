@@ -20,7 +20,7 @@ export default class Koa {
   use(fn) {
     this.middleware.push(fn);
   }
-  listen(args) {
+  listen(...args) {
     const server = http.createServer(this.callback());
     return server.listen(...args);
   }
@@ -44,6 +44,7 @@ export default class Koa {
     // const handleResponse = () => respond(ctx);
     // onFinished(res, onerror);
     // return fnMiddleware(ctx).then(handleResponse).catch(onerror);
+    return fnMiddleware(ctx)
   }
   createContext(req: any, res: any) {
     const context = Object.create(this.context);

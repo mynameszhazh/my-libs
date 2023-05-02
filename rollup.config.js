@@ -4,7 +4,7 @@ import babel from 'rollup-plugin-babel'
 import typescript from '@rollup/plugin-typescript'
 
 export default {
-  input: 'src/index.ts',
+  input: 'src/application.ts',
   output: [
     {
       file: 'dist/bundle.cjs.js',
@@ -21,12 +21,14 @@ export default {
     include: "src/**",
   },
   plugins: [
-    resolve(),
-    commonjs(),
-    babel({
-      babelrc: false,
-      presets: [['@babel/preset-env', { modules: false }]]
+    resolve({
+      preferBuiltins: true
     }),
+    commonjs(),
+    // babel({
+    //   babelrc: false,
+    //   presets: [['@babel/preset-env', { modules: false }]]
+    // }),
     typescript()
   ]
 }

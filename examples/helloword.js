@@ -1,4 +1,5 @@
-import Koa from "koa"
+// import Koa from "koa"
+import Koa from "../dist/bundle.es.js"
 const app = new Koa();
 let port = 3000
 
