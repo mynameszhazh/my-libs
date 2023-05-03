@@ -2,6 +2,7 @@ import http from "http";
 import context from "./context";
 import request from "./request";
 import response from "./response";
+import compose from "../packages/koa-compose";
 
 export default class Koa {
   middleware: any[];
@@ -16,6 +17,7 @@ export default class Koa {
     this.context = Object.create(context);
     this.request = Object.create(request);
     this.response = Object.create(response);
+    this.compose = compose;
   }
   use(fn) {
     this.middleware.push(fn);
@@ -26,7 +28,8 @@ export default class Koa {
   }
   callback() {
     // todo 这里是 所有中间介执行的关键操作
-    const fn = this.middleware[0];
+    const fn = this.compose(this.middleware);
+    // const fn = this.middleware[0];
 
     // if (!this.listenerCount('error')) this.on('error', this.onerror);
 
@@ -37,6 +40,9 @@ export default class Koa {
 
     return handleRequest;
   }
+  compose(middleware: any[]) {
+    throw new Error("Method not implemented.");
+  }
   handleRequest(ctx, fnMiddleware: any) {
     const res = ctx.res;
     res.statusCode = 404;
@@ -44,7 +50,7 @@ export default class Koa {
     // const handleResponse = () => respond(ctx);
     // onFinished(res, onerror);
     // return fnMiddleware(ctx).then(handleResponse).catch(onerror);
-    return fnMiddleware(ctx)
+    return fnMiddleware(ctx);
   }
   createContext(req: any, res: any) {
     const context = Object.create(this.context);
