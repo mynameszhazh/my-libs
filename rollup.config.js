@@ -7,6 +7,15 @@ import typescript from '@rollup/plugin-typescript'
 
 export default [
   {
+    input: 'packages/koa-router/src/index.ts',
+    output: [
+      {
+        format: 'es',
+        file: 'packages/koa-router/dist/koa-router.js',
+      }
+    ]
+  },
+  {
     input: 'packages/koa-compose/src/index.ts',
     output: [
       {
