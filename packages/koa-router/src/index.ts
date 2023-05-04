@@ -1,5 +1,6 @@
 import methods from "methods";
 import Layer from "./layer";
+import compose from "@xjh-mini-vue/koa-compose";
 
 class Router {
   ctx: null;
@@ -59,10 +60,62 @@ class Router {
   }
 
   routes() {
-    const fn = (ctx, next) => {
-      this.ctx = ctx;
+    var router = this;
+
+    var dispatch = function dispatch(ctx, next) {
+      var path = router.opts.routerPath || ctx.routerPath || ctx.path;
+      var matched = router.match(path, ctx.method);
+      var layerChain;
+
+      if (ctx.matched) {
+        ctx.matched.push.apply(ctx.matched, matched.path);
+      } else {
+        ctx.matched = matched.path;
+      }
+
+      ctx.router = router;
+
+      if (!matched.route) return next();
+
+      var matchedLayers = matched.pathAndMethod;
+
+      layerChain = matchedLayers.reduce(function (memo, layer: any) {
+        memo.push(function (ctx, next: () => any): any {
+          ctx.routerName = layer.name;
+          return next();
+        });
+        return memo.concat(layer.stack);
+      }, []);
+
+      // 提前执行所有的router
+      return compose(layerChain)(ctx, next);
     };
-    return fn;
+
+    return dispatch;
+  }
+  match(path: any, method: any) {
+    var layers = this.stack;
+    var layer;
+    var matched: any = {
+      path: [],
+      pathAndMethod: [],
+      route: false,
+    };
+
+    for (var len = layers.length, i = 0; i < len; i++) {
+      layer = layers[i];
+
+      if (layer.match(path)) {
+        matched.path.push(layer);
+
+        if (layer.methods.length === 0 || ~layer.methods.indexOf(method)) {
+          matched.pathAndMethod.push(layer);
+          if (layer.methods.length) matched.route = true;
+        }
+      }
+    }
+
+    return matched;
   }
 
   allowedMethods() {
